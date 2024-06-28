@@ -1,0 +1,20 @@
+require('config.lazy')
+
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+vim.g.neovide_cursor_trail_size = 0.1
+
+vim.o.autochdir = true
+vim.o.autoindent = true
+vim.o.cindent = true
+vim.o.clipboard = 'unnamedplus'
+vim.o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
+vim.o.foldcolumn = '1'
+vim.o.foldlevel = 99
+vim.o.foldlevelstart = 99
+vim.o.number = true
+vim.o.relativenumber = true
+vim.o.shiftwidth = 0
+vim.o.smarttab = true
+vim.o.tabstop = 2
+vim.o.undofile = true
