@@ -14,7 +14,9 @@ vim.o.foldlevel = 99
 vim.o.foldlevelstart = 99
 vim.o.number = true
 vim.o.relativenumber = true
-vim.o.shiftwidth = 0
 vim.o.smarttab = true
 vim.o.tabstop = 2
 vim.o.undofile = true
+
+vim.keymap.set('n', '<C-d>', '<C-d>zz')
+vim.keymap.set('n', '<C-u>', '<C-u>zz')

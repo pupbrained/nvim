@@ -44,7 +44,6 @@ return {
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     keys = {
       {
-        -- Customize or remove this keymap to your liking
         '<leader>e',
         '<CMD>NvimTreeToggle<CR>',
         mode = 'n',
