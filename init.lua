@@ -3,8 +3,8 @@ require('config.lazy')
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 vim.g.neovide_cursor_trail_size = 0.1
+vim.g.neovide_floating_shadow = false
 
-vim.o.autochdir = true
 vim.o.autoindent = true
 vim.o.cindent = true
 vim.o.clipboard = 'unnamedplus'

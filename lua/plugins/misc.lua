@@ -1,4 +1,18 @@
 return {
+	{
+		'LintaoAmons/cd-project.nvim',
+		opts = {
+			projects_picker = 'telescope',
+		},
+		keys = {
+			{
+				'<leader>p',
+				'<CMD>CdProject<CR>',
+				mode = 'n',
+				desc = 'Select Project',
+			},
+		},
+	},
 	{ 'romainl/vim-cool' },
 	{
 		'j-morano/buffer_manager.nvim',
@@ -27,9 +41,12 @@ return {
 		},
 	},
 	{
-		'folke/persistence.nvim',
-		event = 'BufReadPre',
-		config = true,
+		'rmagatti/auto-session',
+		opts = {
+			log_level = 'error',
+			auto_restore_enabled = false,
+			auto_session_suppress_dirs = { '~/', '~/Downloads' },
+		},
 	},
 	{
 		'akinsho/toggleterm.nvim',
@@ -53,8 +70,6 @@ return {
 				desc = 'Toggle NvimTree',
 			},
 		},
-		config = function()
-			require('nvim-tree').setup({})
-		end,
+		opts = { sync_root_with_cwd = true },
 	},
 }

@@ -4,10 +4,43 @@ return {
     config = function()
       local dap = require('dap')
 
-      dap.adapters.codelldb = {
-        type = 'server',
-        host = '127.0.0.1',
-        port = 13000, -- 💀 Use the port printed out or specified with `--port`
+      dap.adapters.lldb = {
+        type = 'executable',
+        command = 'C:\\Program Files\\LLVM\\bin\\lldb-dap.exe', -- adjust as needed, must be absolute path
+        name = 'lldb',
+      }
+
+      dap.configurations.rust = {
+        {
+          name = 'Launch',
+          type = 'lldb',
+          request = 'launch',
+          program = function()
+            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+          end,
+          cwd = '${workspaceFolder}',
+          stopOnEntry = false,
+          args = {},
+
+          initCommands = function()
+            local rustc_sysroot = vim.fn.trim(vim.fn.system('rustc --print sysroot'))
+
+            local script_import = 'command script import "' .. rustc_sysroot .. '/lib/rustlib/etc/lldb_lookup.py"'
+            local commands_file = rustc_sysroot .. '/lib/rustlib/etc/lldb_commands'
+
+            local commands = {}
+            local file = io.open(commands_file, 'r')
+            if file then
+              for line in file:lines() do
+                table.insert(commands, line)
+              end
+              file:close()
+            end
+            table.insert(commands, 1, script_import)
+
+            return commands
+          end,
+        },
       }
     end,
   },
@@ -205,7 +238,24 @@ return {
     config = function()
       local lspconf = require('lspconfig')
 
-      lspconf.clangd.setup({})
+      require('lspconfig.ui.windows').default_options.border = 'rounded'
+
+      print('Setting up clangd...')
+      lspconf.clangd.setup({
+        cmd = {
+          'C:/msys64/clang64/bin/clangd.exe',
+          '--query-driver="C:/msys64/clang64/bin/clang-*"',
+          '--enable-config',
+          '--background-index',
+          '--clang-tidy',
+          '--completion-style=detailed',
+          '--function-arg-placeholders',
+          '--fallback-style=llvm',
+          '--log=verbose',
+          '--pretty',
+        },
+      })
+
       lspconf.eslint.setup({})
 
       lspconf.lua_ls.setup({
@@ -237,7 +287,6 @@ return {
           ensure_installed = {
             'eslint',
             'lua_ls',
-            'clangd',
             'html',
             'unocss',
             'tsserver',
