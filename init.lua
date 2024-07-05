@@ -21,3 +21,5 @@ vim.o.undofile = true
 vim.keymap.set('n', '<C-d>', '<C-d>zz')
 vim.keymap.set('n', '<C-u>', '<C-u>zz')
 vim.keymap.set('v', 's', "<Esc><CMD>'<,'>!sort<CR>")
+vim.keymap.set('n', 'H', '<CMD>bprev<CR>')
+vim.keymap.set('n', 'L', '<CMD>bnext<CR>')

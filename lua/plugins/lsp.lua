@@ -1,5 +1,14 @@
 return {
-	{ 'rcarriga/nvim-dap-ui', dependencies = { 'mfussenegger/nvim-dap', 'nvim-neotest/nvim-nio' } },
+	{
+		'SmiteshP/nvim-navic',
+		dependencies = { 'neovim/nvim-lspconfig' },
+		config = true,
+	},
+	{
+		'rcarriga/nvim-dap-ui',
+		dependencies = { 'mfussenegger/nvim-dap', 'nvim-neotest/nvim-nio' },
+		config = true,
+	},
 	{
 		'mfussenegger/nvim-dap',
 		config = function()
@@ -64,7 +73,69 @@ return {
 		dependencies = { 'nvim-tree/nvim-web-devicons' },
 		opts = {
 			options = {
-				theme = 'catppuccin',
+				globalstatus = true,
+
+				component_separators = {
+					left = '',
+					right = '',
+				},
+
+				section_separators = {
+					left = '',
+					right = '',
+				},
+			},
+			sections = {
+				lualine_a = {
+					{
+						'mode',
+
+						padding = {
+							left = 1,
+							right = 2,
+						},
+
+						separator = {
+							left = '',
+						},
+					},
+				},
+				lualine_b = { 'filename', 'branch' },
+				lualine_c = {
+					'%=',
+					{
+						'buffers',
+
+						symbols = {
+							modified = ' ●', -- Text to show when the buffer is modified
+							alternate_file = '​', -- Text to show to identify the alternate file
+							directory = '', -- Text to show when the buffer is a directory
+						},
+					},
+				},
+				lualine_x = {
+					'encoding',
+					{
+						'fileformat',
+						padding = {
+							left = 1,
+							right = 2,
+						},
+					},
+				},
+				lualine_y = { 'filetype', 'progress' },
+				lualine_z = {
+					{
+						'location',
+						padding = {
+							left = 2,
+							right = 1,
+						},
+						separator = {
+							right = '',
+						},
+					},
+				},
 			},
 		},
 	},
@@ -239,10 +310,18 @@ return {
 		},
 		config = function()
 			local lspconf = require('lspconfig')
+			local navic = require('nvim-navic')
+
+			local on_attach = function(client, bufnr)
+				if client.server_capabilities.documentSymbolProvider then
+					navic.attach(client, bufnr)
+				end
+			end
 
 			require('lspconfig.ui.windows').default_options.border = 'rounded'
 
 			lspconf.clangd.setup({
+				on_attach = on_attach,
 				cmd = {
 					'C:/msys64/clang64/bin/clangd.exe',
 					'--query-driver="C:/msys64/clang64/bin/clang-*"',
@@ -257,9 +336,12 @@ return {
 				},
 			})
 
-			lspconf.eslint.setup({})
+			lspconf.eslint.setup({
+				on_attach = on_attach,
+			})
 
 			lspconf.lua_ls.setup({
+				on_attach = on_attach,
 				settings = {
 					Lua = {
 						diagnostics = {
@@ -270,6 +352,7 @@ return {
 			})
 
 			lspconf.volar.setup({
+				on_attach = on_attach,
 				filetypes = {
 					'typescript',
 					'javascript',
