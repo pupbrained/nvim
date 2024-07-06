@@ -1,5 +1,71 @@
 return {
   {
+    'hrsh7th/nvim-cmp',
+    event = 'InsertEnter',
+    dependencies = {
+      'hrsh7th/cmp-nvim-lsp',
+      'hrsh7th/cmp-buffer',
+      'hrsh7th/cmp-path',
+      'hrsh7th/cmp-nvim-lua',
+      'onsails/lspkind.nvim',
+    },
+    config = function()
+      local cmp = require('cmp')
+
+      cmp.setup({
+        formatting = {
+          format = require('lspkind').cmp_format({
+            mode = 'symbol',
+            maxwidth = 50,
+            ellipsis_char = '...',
+            symbol_map = { Codeium = '' },
+          }),
+        },
+        experimental = {
+          ghost_text = {
+            hlgroup = 'Comment',
+          },
+        },
+        window = {
+          completion = {
+            border = 'rounded',
+          },
+          documentation = {
+            border = 'rounded',
+          },
+        },
+        sources = {
+          { name = 'codeium', priority = 1000 },
+          { name = 'nvim_lsp', priority = 900 },
+          { name = 'lazydev', priority = 500 },
+          { name = 'buffer', priority = 100 },
+          { name = 'path', priority = 50 },
+        },
+        mapping = cmp.mapping.preset.insert({
+          ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+          ['<C-f>'] = cmp.mapping.scroll_docs(4),
+          ['<C-Space>'] = cmp.mapping.complete(),
+          ['<C-e>'] = cmp.mapping.abort(),
+          ['<CR>'] = cmp.mapping.confirm({ select = true }),
+        }),
+      })
+    end,
+  },
+  {
+    'folke/lazydev.nvim',
+    dependencies = {
+      { 'Bilal2453/luvit-meta', lazy = true },
+    },
+    ft = 'lua',
+    opts = {
+      library = {
+        -- See the configuration section for more details
+        -- Load luvit types when the `vim.uv` word is found
+        { path = 'luvit-meta/library', words = { 'vim%.uv' } },
+      },
+    },
+  },
+  {
     'SmiteshP/nvim-navic',
     dependencies = { 'neovim/nvim-lspconfig' },
     opts = {
@@ -239,6 +305,20 @@ return {
     'mrcjkb/rustaceanvim',
     version = '^4', -- Recommended
     lazy = false, -- This plugin is already lazy
+    dependencies = {
+      {
+        'saecki/crates.nvim',
+        tag = 'stable',
+        opts = {
+          lsp = {
+            enabled = true,
+            actions = true,
+            completion = true,
+            hover = true,
+          },
+        },
+      },
+    },
   },
   {
     'stevearc/conform.nvim',
@@ -322,6 +402,10 @@ return {
 
       require('lspconfig.ui.windows').default_options.border = 'rounded'
 
+      lspconf.eslint.setup({})
+      lspconf.harper_ls.setup({})
+      lspconf.taplo.setup({})
+
       lspconf.clangd.setup({
         cmd = {
           'C:/msys64/clang64/bin/clangd.exe',
@@ -336,8 +420,6 @@ return {
           '--pretty',
         },
       })
-
-      lspconf.eslint.setup({})
 
       lspconf.lua_ls.setup({
         settings = {
@@ -374,9 +456,11 @@ return {
           ensure_installed = {
             'eslint',
             'lua_ls',
+            'harper-ls',
             'html',
-            'unocss',
+            'taplo',
             'tsserver',
+            'unocss',
             'volar',
           },
         })
